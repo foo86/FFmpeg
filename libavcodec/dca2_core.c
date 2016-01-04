@@ -2007,7 +2007,7 @@ int ff_dca2_core_parse(DCA2CoreDecoder *s, uint8_t *data, int size)
 
     if (ff_dca2_seek_bits(&s->gb, s->frame_size * 8)) {
         av_log(s->avctx, AV_LOG_ERROR, "Read past end of core frame\n");
-        return ret;
+        return AVERROR_INVALIDDATA;
     }
 
     return 0;
