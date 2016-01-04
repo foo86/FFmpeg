@@ -137,7 +137,7 @@ static av_cold void dca2_init_vlcs(void)
 
     for (i = 0; i < DCA2_CODE_BOOKS; i++) {
         vlc_quant_index[i].offset    = bitalloc_offsets[i];
-        vlc_quant_index[i].max_depth = 1 + (i > 5);
+        vlc_quant_index[i].max_depth = 1 + (i > 4);
         for (j = 0; j < quant_index_group_size[i]; j++, k++)
             DCA2_INIT_VLC(vlc_quant_index[i].vlc[j], bitalloc_maxbits[i][j],
                           bitalloc_sizes[i], bitalloc_bits[i][j], bitalloc_codes[i][j]);
