@@ -1722,8 +1722,10 @@ static int parse_x96_frame(DCA2CoreDecoder *s)
         return ret;
 
     // Seek to the end of core frame
-    if (ff_dca2_seek_bits(&s->gb, s->frame_size * 8))
+    if (ff_dca2_seek_bits(&s->gb, s->frame_size * 8)) {
+        av_log(s->avctx, AV_LOG_ERROR, "Read past end of X96 frame\n");
         return AVERROR_INVALIDDATA;
+    }
 
     return 0;
 }
