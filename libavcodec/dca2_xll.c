@@ -142,12 +142,12 @@ static int chs_parse_header(DCA2XllDecoder *s, DCA2XllChSet *c, DCA2ExssAsset *a
     // Storage unit width
     c->storage_bit_res = get_bits(&s->gb, 5) + 1;
     if (c->storage_bit_res != 16 && c->storage_bit_res != 24) {
-        av_log(s->avctx, AV_LOG_WARNING, "Unsupported storage bit resolution for XLL channel set (%d)", c->storage_bit_res);
+        av_log(s->avctx, AV_LOG_WARNING, "Unsupported storage bit resolution for XLL channel set (%d)\n", c->storage_bit_res);
         return AVERROR_PATCHWELCOME;
     }
 
     if (c->pcm_bit_res > c->storage_bit_res) {
-        av_log(s->avctx, AV_LOG_ERROR, "Invalid PCM bit resolution for XLL channel set (%d > %d)", c->pcm_bit_res, c->storage_bit_res);
+        av_log(s->avctx, AV_LOG_ERROR, "Invalid PCM bit resolution for XLL channel set (%d > %d)\n", c->pcm_bit_res, c->storage_bit_res);
         return AVERROR_INVALIDDATA;
     }
 
