@@ -21,19 +21,14 @@
 
 static int get_linear(GetBitContext *gb, int n)
 {
-    unsigned int v;
-
-    if (n == 0)
-        return 0;
-
-    v = get_bits(gb, n);
+    unsigned int v = get_bits_long(gb, n);
     return (v >> 1) ^ -(v & 1);
 }
 
 static int get_rice_un(GetBitContext *gb, int k)
 {
     unsigned int v = get_unary(gb, 1, 128);
-    return k ? (v << k) | get_bits(gb, k) : v;
+    return k ? (v << k) | get_bits_long(gb, k) : v;
 }
 
 static int get_rice(GetBitContext *gb, int k)
