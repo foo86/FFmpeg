@@ -2253,9 +2253,9 @@ static int filter_frame_fixed(DCA2CoreDecoder *s, AVFrame *frame)
         int *samples_rs = s->output_samples[DCA2_SPEAKER_Rs];
         int *samples_cs = s->output_samples[DCA2_SPEAKER_Cs];
         for (n = 0; n < nsamples; n++) {
-            int cs = mul23(samples_cs[n], 5931520);
-            samples_ls[n] = clip23(samples_ls[n] - cs);
-            samples_rs[n] = clip23(samples_rs[n] - cs);
+            int cs = mul23(samples_cs[n], 5931520 /* M_SQRT1_2 * (1 << 23) */);
+            samples_ls[n] -= cs;
+            samples_rs[n] -= cs;
         }
     }
 
