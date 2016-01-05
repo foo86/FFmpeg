@@ -583,17 +583,10 @@ static int parse_subframe_header(DCA2CoreDecoder *s, int sf,
             // Select codebook
             int sel = s->transition_mode_sel[ch];
             // Not high frequency VQ subbands
-            for (band = 0; band < s->subband_vq_start[ch]; band++) {
+            for (band = 0; band < s->subband_vq_start[ch]; band++)
                 // Present only if bits allocated
-                if (s->bit_allocation[ch][band]) {
-                    int trans_ssf = get_vlc(&s->gb, &vlc_transition_mode, sel);
-                    if (trans_ssf >= 4) {
-                        av_log(s->avctx, AV_LOG_ERROR, "Invalid transition mode index\n");
-                        return AVERROR_INVALIDDATA;
-                    }
-                    s->transition_mode[sf][ch][band] = trans_ssf;
-                }
-            }
+                if (s->bit_allocation[ch][band])
+                    s->transition_mode[sf][ch][band] = get_vlc(&s->gb, &vlc_transition_mode, sel);
         }
     }
 
