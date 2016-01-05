@@ -92,6 +92,9 @@ static int parse_descriptor(DCA2ExssParser *s, DCA2ExssAsset *asset)
 
             // Additional textual information string
             skip_bits_long(&s->gb, text_size * 8);
+
+            if (get_bits_left(&s->gb) < 0)
+                return AVERROR_INVALIDDATA;
         }
 
         // PCM bit resolution
