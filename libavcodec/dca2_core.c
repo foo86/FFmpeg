@@ -2230,6 +2230,30 @@ int ff_dca2_core_filter_fixed(DCA2CoreDecoder *s, int x96_synth)
     return 0;
 }
 
+static void sumdiff_fixed(int *samples_l, int *samples_r, int nsamples)
+{
+    int n;
+
+    for (n = 0; n < nsamples; n++) {
+        int a = samples_l[n] + samples_r[n];
+        int b = samples_l[n] - samples_r[n];
+        samples_l[n] = a;
+        samples_r[n] = b;
+    }
+}
+
+static void sumdiff_float(float *samples_l, float *samples_r, int nsamples)
+{
+    int n;
+
+    for (n = 0; n < nsamples; n++) {
+        float a = samples_l[n] + samples_r[n];
+        float b = samples_l[n] - samples_r[n];
+        samples_l[n] = a;
+        samples_r[n] = b;
+    }
+}
+
 static int filter_frame_fixed(DCA2CoreDecoder *s, AVFrame *frame)
 {
     AVCodecContext *avctx = s->avctx;
@@ -2286,6 +2310,23 @@ static int filter_frame_fixed(DCA2CoreDecoder *s, AVFrame *frame)
                                    coeff, nsamples);
                 }
             }
+        }
+    }
+
+    if (!(s->ext_audio_mask & (DCA2_CSS_XXCH | DCA2_CSS_XCH | DCA2_EXSS_XXCH))) {
+        // Front sum/difference decoding
+        if ((s->sumdiff_front && s->audio_mode > AMODE_MONO)
+            || s->audio_mode == AMODE_STEREO_SUMDIFF) {
+            sumdiff_fixed(s->output_samples[DCA2_SPEAKER_L],
+                          s->output_samples[DCA2_SPEAKER_R],
+                          nsamples);
+        }
+
+        // Surround sum/difference decoding
+        if (s->sumdiff_surround && s->audio_mode >= AMODE_2F2R) {
+            sumdiff_fixed(s->output_samples[DCA2_SPEAKER_Ls],
+                          s->output_samples[DCA2_SPEAKER_Rs],
+                          nsamples);
         }
     }
 
@@ -2454,6 +2495,23 @@ static int filter_frame_float(DCA2CoreDecoder *s, AVFrame *frame)
                                             output_samples[spkr],
                                             scale_inv, nsamples);
             }
+        }
+    }
+
+    if (!(s->ext_audio_mask & (DCA2_CSS_XXCH | DCA2_CSS_XCH | DCA2_EXSS_XXCH))) {
+        // Front sum/difference decoding
+        if ((s->sumdiff_front && s->audio_mode > AMODE_MONO)
+            || s->audio_mode == AMODE_STEREO_SUMDIFF) {
+            sumdiff_float(output_samples[DCA2_SPEAKER_L],
+                          output_samples[DCA2_SPEAKER_R],
+                          nsamples);
+        }
+
+        // Surround sum/difference decoding
+        if (s->sumdiff_surround && s->audio_mode >= AMODE_2F2R) {
+            sumdiff_float(output_samples[DCA2_SPEAKER_Ls],
+                          output_samples[DCA2_SPEAKER_Rs],
+                          nsamples);
         }
     }
 
