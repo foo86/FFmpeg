@@ -257,7 +257,8 @@ static int parse_frame_header(DCA2CoreDecoder *s)
     skip_bits(&s->gb, 2);
 
     // Source PCM resolution
-    s->source_pcm_res = ff_dca_bits_per_sample[pcmr_index = get_bits(&s->gb, 3)];
+    pcmr_index = get_bits(&s->gb, 3);
+    s->source_pcm_res = pcmr_index < 7 ? ff_dca_bits_per_sample[pcmr_index] : 0;
     if (!s->source_pcm_res) {
         av_log(s->avctx, AV_LOG_ERROR, "Invalid source PCM resolution\n");
         return AVERROR_INVALIDDATA;
