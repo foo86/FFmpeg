@@ -361,8 +361,8 @@ typedef struct DCA2CoreDecoder {
     int             output_history_lfe_fixed;               ///< LFE PCM history for X96 filter
     float           output_history_lfe_float;               ///< LFE PCM history for X96 filter
 
-    int     ch_remap[DCA2_SPEAKER_COUNT];
-    int     request_mask;
+    int     ch_remap[DCA2_SPEAKER_COUNT];   ///< Channel to speaker map
+    int     request_mask;   ///< Requested channel layout (for stereo downmix)
 
     int     npcmsamples;    ///< Number of PCM samples per channel
     int     output_rate;    ///< Output sample rate (1x or 2x header rate)
@@ -442,7 +442,7 @@ typedef struct DCA2XllChSet {
     int     dmix_scale[DCA2_XLL_DMIX_SCALES_MAX];       ///< Downmixing scales
     int     dmix_scale_inv[DCA2_XLL_DMIX_SCALES_MAX];   ///< Inverse downmixing scales
     int     ch_mask;                ///< Channel mask for set
-    int     ch_remap[DCA2_XLL_CHANNELS_MAX];
+    int     ch_remap[DCA2_XLL_CHANNELS_MAX];    ///< Channel to speaker map
 
     int     nfreqbands; ///< Number of frequency bands (1 or 2)
     int     nabits;     ///< Number of bits to read bit allocation coding parameter
@@ -516,7 +516,7 @@ typedef struct DCA2Context {
     DCA2ExssParser  exss;  ///< EXSS parser context
     DCA2XllDecoder  xll;   ///< XLL decoder context
 
-    uint8_t         *buffer;
+    uint8_t         *buffer;    ///< Packet buffer
     unsigned int    buffer_size;
 
     int     packet; ///< Packet flags
@@ -524,8 +524,8 @@ typedef struct DCA2Context {
     int     has_residual_encoded;   ///< XLL residual encoded channels present
     int     core_residual_valid;    ///< Core valid for residual decoding
 
-    int     request_channel_layout;
-    int     core_only;
+    int     request_channel_layout; ///< Converted from avctx.request_channel_layout
+    int     core_only;              ///< Core only decoding flag
 } DCA2Context;
 
 int ff_dca2_set_channel_layout(AVCodecContext *avctx, int *ch_remap, int dca_mask);
