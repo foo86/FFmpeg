@@ -186,7 +186,7 @@ static int filter_hd_ma_frame(DCA2Context *s, AVFrame *frame)
     int ch_remap[DCA2_SPEAKER_COUNT];
 
     if (s->packet & DCA2_PACKET_CORE) {
-        int x96_synth = 0;
+        int x96_synth = -1;
 
         if (p->freq == 96000 && s->core.sample_rate == 48000)
             x96_synth = 1;

@@ -2137,6 +2137,8 @@ int ff_dca2_core_filter_fixed(DCA2CoreDecoder *s, int x96_synth)
         x96_nchannels = s->x96_nchannels;
         x96_synth = 1;
     }
+    if (x96_synth < 0)
+        x96_synth = 0;
 
     s->output_rate = s->sample_rate << x96_synth;
     s->npcmsamples = nsamples = (s->npcmblocks * DCA2_PCMBLOCK_SAMPLES) << x96_synth;
