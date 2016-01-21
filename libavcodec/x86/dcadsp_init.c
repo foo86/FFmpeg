@@ -21,26 +21,7 @@
 #include "libavutil/attributes.h"
 #include "libavutil/cpu.h"
 #include "libavutil/x86/cpu.h"
-#include "libavcodec/dcadsp.h"
-
-void ff_dca_lfe_fir0_sse(float *out, const float *in, const float *coefs);
-void ff_dca_lfe_fir1_sse(float *out, const float *in, const float *coefs);
-void ff_dca_lfe_fir0_fma3(float *out, const float *in, const float *coefs);
-
-av_cold void ff_dcadsp_init_x86(DCADSPContext *s)
-{
-    int cpu_flags = av_get_cpu_flags();
-
-    if (EXTERNAL_SSE(cpu_flags)) {
-        s->lfe_fir[0]        = ff_dca_lfe_fir0_sse;
-        s->lfe_fir[1]        = ff_dca_lfe_fir1_sse;
-    }
-
-    if (EXTERNAL_FMA3(cpu_flags)) {
-        s->lfe_fir[0]        = ff_dca_lfe_fir0_fma3;
-    }
-}
-
+#include "libavcodec/synth_filter.h"
 
 #define SYNTH_FILTER_FUNC(opt)                                                 \
 void ff_synth_filter_inner_##opt(float *synth_buf_ptr, float synth_buf2[32],   \
